@@ -1,15 +1,22 @@
-import json
-from fractions import Fraction
-from typing import List
-
-import uvicorn
 from fastapi import FastAPI
 from starlette.responses import JSONResponse
-
+from fastapi.middleware.cors import CORSMiddleware
 from interface import FractionCreate
 from repository.postgres_function import PostgresFunction
 app = FastAPI()
 
+# CORS to allow other port
+origins = [
+    "http://localhost:3000",  # React dev server origin
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,        # Allow this origin to make requests
+    allow_credentials=True,
+    allow_methods=["*"],          # Allow all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],          # Allow all headers
+)
 pos = PostgresFunction()
 
 
@@ -24,20 +31,22 @@ def insert_new_ploys(fk_id:int , data: dict):
    pos.postgres_insert_strategic(fk_id, data)
 
 @app.get('/get_killteam')
-def get_killteam(fraction_name: str):
-    db_data = pos.post_get_fraction(fraction_name)
-    print(db_data)
+def fetch_all_fraction_from_database():
+    db_data = pos.postgres_fetch_fraction()
+    fractions_list = []
     for data in db_data:
-        print(data)
-        for id in data:
-            print(id.name)
+        for fraction in data:
+            fractions_list.append({
+                'fraction_id': fraction.id,
+                'fraction':fraction.name
+            })
+
+    return JSONResponse(fractions_list)
 
 
-@app.get('/get_killteam_operatoive')
-def get_killteam_operative(fraction_name: str):
+@app.get('/get_killteam_operative')
+def fetch_killteam_operative(fraction_name: str):
     db_data = pos.post_get_operative(fraction_name)
-    print(fraction_name)
-    print(db_data)
     operative_list  = []
     for operatives_list in db_data:
         for op in operatives_list:

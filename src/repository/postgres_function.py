@@ -97,10 +97,10 @@ class PostgresFunction:
 
 
     @staticmethod
-    def post_get_fraction(fraction_name):
+    def postgres_fetch_fraction():
         try:
             session = connect_db()
-            stmt = select(Fraction).where(Fraction.name==fraction_name)
+            stmt = select(Fraction)
             query = session.execute(stmt) # .first() first with select
             return query
         except Exception as e:
