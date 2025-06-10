@@ -1,6 +1,5 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Text
-from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import relationship, declarative_base
+from sqlalchemy import Column, Integer, ForeignKey, Text
+from sqlalchemy.orm import relationship
 from models.base import Base
 
 

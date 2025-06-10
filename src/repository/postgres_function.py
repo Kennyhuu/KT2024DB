@@ -1,4 +1,6 @@
-from typing import List
+
+from sqlalchemy import select
+from sqlalchemy.orm import query_expression
 
 from interface import FractionCreate
 from models import Operative, StrategicPloy, Equipment, FireFightPloy
@@ -92,3 +94,27 @@ class PostgresFunction:
             session.add(new_ploy)
         session.commit()
         session.close()
+
+
+    @staticmethod
+    def post_get_fraction(fraction_name):
+        try:
+            session = connect_db()
+            stmt = select(Fraction).where(Fraction.name==fraction_name)
+            query = session.execute(stmt) # .first() first with select
+            return query
+        except Exception as e:
+            print(e)
+
+    @staticmethod
+    def post_get_operative(fraction_name):
+        try:
+            session = connect_db()
+            stmt = select(Fraction).where(Fraction.name == fraction_name)
+            query = session.execute(stmt).first()  # .first() first with select
+
+            stmt2 = select(Operative).where(Operative.fraction_id == query[0].id)
+            return session.execute(stmt2)
+
+        except Exception as e:
+            print(e)
