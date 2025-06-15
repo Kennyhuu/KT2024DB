@@ -55,7 +55,7 @@ class PostgresFunction:
         session = connect_db()
         for ploy in ploy_list:
             new_ploy = StrategicPloy(
-                fractions_id=fk_id,
+                fraction_id=fk_id,
                 name=ploy["name"],
                 description=ploy["description"]
             )
